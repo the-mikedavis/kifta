@@ -39,3 +39,40 @@ RUN cfssl gencert \
       -profile=kubernetes \
       -hostname=worker,127.0.0.1 \
       worker-csr.json | cfssljson -bare worker
+
+# ditto for the controller manager
+COPY kube-controller-manager-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
+
+# ditto for the kube-proxy service
+COPY kube-proxy-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      kube-proxy-csr.json | cfssljson -bare kube-proxy
+
+# ditto for the scheduler 
+COPY kube-scheduler-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+
+# ditto for the apiserver 
+COPY kubernetes-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      -hostname=127.0.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local \
+      kubernetes-csr.json | cfssljson -bare kubernetes
