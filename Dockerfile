@@ -76,3 +76,12 @@ RUN cfssl gencert \
       -profile=kubernetes \
       -hostname=127.0.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local \
       kubernetes-csr.json | cfssljson -bare kubernetes
+
+# ditto for the service account
+COPY service-account-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      service-account-csr.json | cfssljson -bare service-account
