@@ -4,6 +4,9 @@ Kifta is a set of docker images derived from on Ubuntu 18.04 that run a
 single-pod Kubernetes cluster, running the worker and controller processes in
 the same pod. Kifta clusters can only be accessed from localhost (on-pod).
 
+Kifta is an example of running Kubernetes in Kubernetes (colloqially known as
+Kubeception).
+
 > Never run a Kifta cluster in production. This project is for education
 > purposes only.
 
@@ -13,3 +16,6 @@ Kifta was built with the instructions found in the popular education repository
 Kifta generates new PKI certificates on every build of the image. These
 certificates - as well as their keys - are stored in plain text in the
 filesystem.
+
+> Kifta is under development and does not currently provide all necessary
+> containers and startups.
