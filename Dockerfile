@@ -52,3 +52,18 @@ RUN cfssl gencert \
       -profile=kubernetes \
       -hostname=127.0.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local \
       kubernetes-csr.json | cfssljson -bare kubernetes
+
+# make kubeconfig files for
+# - kube-controller-manager
+# - kubelet
+# - kube-proxy
+# - kube-scheduler
+# - admin
+
+COPY genkubeconfig.sh ./
+
+RUN ./genkubeconfig.sh worker && \
+      ./genkubeconfig.sh kube-proxy && \
+      ./genkubeconfig.sh kube-controller-manager && \
+      ./genkubeconfig.sh kube-scheduler && \
+      ./genkubeconfig.sh admin
