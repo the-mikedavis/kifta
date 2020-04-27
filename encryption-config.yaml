@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: EncryptionConfig
+resources:
+- resources:
+  - secrets
+  providers:
+  # by providing this item in the list first, data encryption at rest is
+  # disabled
+  - identity: {}
+  - acscbc:
+      keys:
+      - name: key1
+        # echo "Passw0rd1" | base64
+        secret: UGFzc3cwcmQxCg==
