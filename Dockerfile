@@ -18,5 +18,12 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bi
 # copy over the config for the root Certificate Authority and generate the
 # certificate & key
 COPY ca-config.json ca-csr.json ./
-
 RUN cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+
+COPY admin-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      admin-csr.json | cfssljson -bare admin
