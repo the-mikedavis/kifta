@@ -20,6 +20,7 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bi
 COPY ca-config.json ca-csr.json ./
 RUN cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
+# ditto admin user
 COPY admin-csr.json ./
 RUN cfssl gencert \
       -ca=ca.pem \
@@ -27,3 +28,14 @@ RUN cfssl gencert \
       -config=ca-config.json \
       -profile=kubernetes \
       admin-csr.json | cfssljson -bare admin
+
+# ditto "worker" - usually meant to describe a node running kubelet and
+# kube-proxy
+COPY worker-csr.json ./
+RUN cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      -hostname=worker,127.0.0.1 \
+      worker-csr.json | cfssljson -bare worker
