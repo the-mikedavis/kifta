@@ -17,21 +17,26 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bi
 
 # copy over the config for the root Certificate Authority and generate the
 # certificate & key
-COPY ca-config.json ca-csr.json ./
+COPY csr-configurations/* ./
 RUN cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
-# ditto admin user
-COPY admin-csr.json ./
-RUN cfssl gencert \
-      -ca=ca.pem \
-      -ca-key=ca-key.pem \
-      -config=ca-config.json \
-      -profile=kubernetes \
-      admin-csr.json | cfssljson -bare admin
+# generate certificates for identities in the PKI who need them:
+# - kubernetes (api server)
+# - kube-proxy
+# - worker (kubelet)
+# - kube-scheduler
+# - kube-controller-manager
+# - service accounts
+COPY gencert.sh .
 
-# ditto "worker" - usually meant to describe a node running kubelet and
-# kube-proxy
-COPY worker-csr.json ./
+# all certificates without hostnames
+RUN ./gencert.sh admin && \
+      ./gencert.sh kube-controller-manager && \
+      ./gencert.sh kube-proxy && \
+      ./gencert.sh kube-scheduler && \
+      ./gencert.sh service-account
+
+# the worker(s) and API server(s) specify their hostnames
 RUN cfssl gencert \
       -ca=ca.pem \
       -ca-key=ca-key.pem \
@@ -40,35 +45,6 @@ RUN cfssl gencert \
       -hostname=worker,127.0.0.1 \
       worker-csr.json | cfssljson -bare worker
 
-# ditto for the controller manager
-COPY kube-controller-manager-csr.json ./
-RUN cfssl gencert \
-      -ca=ca.pem \
-      -ca-key=ca-key.pem \
-      -config=ca-config.json \
-      -profile=kubernetes \
-      kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
-
-# ditto for the kube-proxy service
-COPY kube-proxy-csr.json ./
-RUN cfssl gencert \
-      -ca=ca.pem \
-      -ca-key=ca-key.pem \
-      -config=ca-config.json \
-      -profile=kubernetes \
-      kube-proxy-csr.json | cfssljson -bare kube-proxy
-
-# ditto for the scheduler 
-COPY kube-scheduler-csr.json ./
-RUN cfssl gencert \
-      -ca=ca.pem \
-      -ca-key=ca-key.pem \
-      -config=ca-config.json \
-      -profile=kubernetes \
-      kube-scheduler-csr.json | cfssljson -bare kube-scheduler
-
-# ditto for the apiserver 
-COPY kubernetes-csr.json ./
 RUN cfssl gencert \
       -ca=ca.pem \
       -ca-key=ca-key.pem \
@@ -76,12 +52,3 @@ RUN cfssl gencert \
       -profile=kubernetes \
       -hostname=127.0.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local \
       kubernetes-csr.json | cfssljson -bare kubernetes
-
-# ditto for the service account
-COPY service-account-csr.json ./
-RUN cfssl gencert \
-      -ca=ca.pem \
-      -ca-key=ca-key.pem \
-      -config=ca-config.json \
-      -profile=kubernetes \
-      service-account-csr.json | cfssljson -bare service-account
