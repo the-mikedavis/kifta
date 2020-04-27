@@ -14,6 +14,8 @@ COPY encryption-config.yaml .
 
 EXPOSE 2379 2380
 
+ENV ETCDCTL_API=3
+
 CMD /usr/local/bin/etcd \
   --name kifta \
   --cert-file=/etc/etcd/kubernetes.pem \
