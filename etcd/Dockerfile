@@ -10,8 +10,6 @@ RUN wget -q --https-only \
   mv etcd-v3.4.0-linux-amd64/etcd* /usr/local/bin/ && \
   mkdir -p /var/lib/etcd
 
-COPY encryption-config.yaml .
-
 EXPOSE 2379 2380
 
 ENV ETCDCTL_API=3
