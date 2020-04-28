@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kifta
+  namespace: default
+  labels:
+    app: kifta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kifta
+  template:
+    metadata:
+      labels:
+        app: kifta
+    spec:
+      containers:
+      - name: etcd
+        image: us.gcr.io/relay-cuatro/kifta/etcd:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2379
+          name: client
+        - containerPort: 2380
+          name: host
+      - name: kube-apiserver
+        image: us.gcr.io/relay-cuatro/kifta/kube-apiserver:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6443
+          name: api
+      - name: kube-controller-manager
+        image: us.gcr.io/relay-cuatro/kifta/kube-controller-manager:v3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 10257
+          name: api
+      - name: kube-scheduler
+        image: us.gcr.io/relay-cuatro/kifta/kube-scheduler:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 10251
+          name: api

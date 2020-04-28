@@ -9,7 +9,7 @@ RUN wget -q --https-only \
 
 COPY kube-scheduler.yaml .
 
-EXPOSE 10257
+EXPOSE 10251
 
 CMD /usr/local/bin/kube-scheduler \
   --config=/etc/kubernetes/config/kube-scheduler.yaml \

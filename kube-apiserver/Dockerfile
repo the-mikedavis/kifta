@@ -12,7 +12,6 @@ COPY encryption-config.yaml .
 EXPOSE 6443
 
 CMD /usr/local/bin/kube-apiserver \
-  --advertise-address=127.0.0.1 \
   --allow-privileged=true \
   --apiserver-count=1 \
   --audit-log-maxage=30 \
