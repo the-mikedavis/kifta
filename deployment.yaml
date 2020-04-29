@@ -17,28 +17,24 @@ spec:
     spec:
       containers:
       - name: etcd
-        image: us.gcr.io/relay-cuatro/kifta/etcd:v2
-        imagePullPolicy: Always
+        image: docker.pkg.github.com/the-mikedavis/kifta/etcd:v1
         ports:
         - containerPort: 2379
-          name: client
+          name: data
         - containerPort: 2380
           name: host
       - name: kube-apiserver
-        image: us.gcr.io/relay-cuatro/kifta/kube-apiserver:v2
-        imagePullPolicy: Always
+        image: docker.pkg.github.com/the-mikedavis/kifta/kube-apiserver:v1
         ports:
         - containerPort: 6443
           name: api
       - name: kube-controller-manager
-        image: us.gcr.io/relay-cuatro/kifta/kube-controller-manager:v3
-        imagePullPolicy: Always
+        image: docker.pkg.github.com/the-mikedavis/kifta/kube-controller-manager:v1
         ports:
         - containerPort: 10257
           name: api
       - name: kube-scheduler
-        image: us.gcr.io/relay-cuatro/kifta/kube-scheduler:v2
-        imagePullPolicy: Always
+        image: docker.pkg.github.com/the-mikedavis/kifta/kube-scheduler:v1
         ports:
         - containerPort: 10251
           name: api

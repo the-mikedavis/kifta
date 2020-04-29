@@ -1,4 +1,4 @@
-FROM kifta/base:latest AS base
+FROM docker.pkg.github.com/the-mikedavis/kifta/base:v1 AS base
 
 WORKDIR /etc/kubernetes/config/
 
