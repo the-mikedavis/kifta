@@ -78,7 +78,7 @@ Interacting with the control plane running there:
 
 ```console
 $ POD_NAME=$(kubectl get pods -l app=kifta -o jsonpath="{.items[0].metadata.name}")
-$ kubectl exec -it $POD_NAME -c kube-apiserver
+$ kubectl exec -it $POD_NAME -c kube-apiserver -- /bin/bash
 > kubectl get componentstatus --kubeconfig /var/kifta/admin.kubeconfig
 ```
 
